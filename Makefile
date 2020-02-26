@@ -32,6 +32,7 @@ setup_root_account:
 	@make ssh_key_create
 	@make ssh_key_print
 	@make ssh_key_add_bash_agent
+	@make swap_space_increase
 	## TODO - install npm
 	## TODO - add swap space for composer update
 
