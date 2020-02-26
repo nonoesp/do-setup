@@ -43,8 +43,7 @@ setup_user_account:
 	@make ssh_key_create
 	@make ssh_key_print
 	@make ssh_key_add_bash_agent
-	## TODO - create laravel folder
-	## TODO - create domain optionally?
+	@make php_setup
 
 user_create:
 	@echo "Creating user ${username}.."
@@ -219,7 +218,7 @@ swap_space_increase:
 ################################################
 
 php_setup:
-	@sudo apt install unzip
+	@sudo apt install unzip -y
 	@make composer_install
 
 composer_install:
@@ -231,3 +230,6 @@ composer_install:
 	# } echo PHP_EOL;"
 	@sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 	@composer
+
+folio_clone:
+	@git clone https://github.com/nonoesp/laravel-folio /var/www/laravel-folio
