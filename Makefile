@@ -56,6 +56,15 @@ user_copy_do_setup:
 	@chown -R $(username):$(username) /home/$(username)/do-setup
 	@chmod -R 755 /home/$(username)/do-setup
 
+# user_create_ssh_agent_daemon:
+# 	@printf '[Unit]\nDescription=SSH authentication agent\n\n[Service]\nExecStart=/usr/bin/ssh-agent -a %%t/ssh-agent.socket -D\nType=simple\n\n[Install]\nWantedBy=default.target\n' \
+# 	| sudo tee -a /etc/systemd/user/ssh-agent.service
+# 	@systemctl --user enable ssh-agent.service
+# 	@systemctl --user start ssh-agent.service
+# 	@echo '# Nono - Daemon to start ssh-agent upon login to server' >> ~/.bashrc
+# 	@echo 'export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"' >> ~/.bashrc
+# 	@exit
+
 # Preseed phpMyAdmin install selections (to skip interactive input)
 phpmyadmin_setup:
 	echo "phpmyadmin phpmyadmin/internal/skip-preseed boolean true" | debconf-set-selections
@@ -134,7 +143,7 @@ ssh_key_print:
 ssh_key_add_bash_agent:
 	@echo "" >> ~/.bashrc
 	@echo "# Nono · Load ssh-agent on startup" >> ~/.bashrc
-	@echo 'alias sha="ssh-agent -s && ssh-add ~/.ssh/id_rsa"' >> ~/.bashrc
+	@echo 'alias sha="eval $$(ssh-agent -s) && ssh-add ~/.ssh/id_rsa"' >> ~/.bashrc
 
 ################################################
 # GIT
