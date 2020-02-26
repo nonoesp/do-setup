@@ -241,7 +241,7 @@ folio_setup:
 	FOLIOPATH="$$FOLIOPATH"; \
 	echo $$FOLIOPATH; \
 	sudo chown -R $(username):www-data $$FOLIOPATH/storage; \
-    sudo chown -R $(username):www-data $$PATH/boostrap/cache; \
-	sudo chmod -R 775 $$PATH/storage; \
-	sudo chmod -R 775 $$PATH/boostrap/cache; \
+    sudo chown -R $(username):www-data $$FOLIOPATH/boostrap/cache; \
+	sudo chmod -R 775 $$FOLIOPATH/storage; \
+	sudo chmod -R 775 $$FOLIOPATH/boostrap/cache; \
 	echo "Done setting up $$FOLIOPATH"
