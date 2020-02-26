@@ -215,6 +215,8 @@ swap_space_increase:
 	/sbin/swapon /var/swap.1
 
 nginx_setup_client_max_body_size:
+	@sed -i 's/client_max_body_size/#client_max_body_size/g' \
+	/etc/nginx/nginx.conf
 	@sed -i 's/http {/http { \n# Nono · increase body size\nclient_max_body_size 64m;/g' \
 	/etc/nginx/nginx.conf
 	@systemctl restart nginx
