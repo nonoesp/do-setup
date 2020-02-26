@@ -143,7 +143,8 @@ ssh_key_print:
 ssh_key_add_bash_agent:
 	@echo "" >> ~/.bashrc
 	@echo "# Nono · Load ssh-agent on startup" >> ~/.bashrc
-	@echo 'alias sha="eval $$(ssh-agent -s) && ssh-add ~/.ssh/id_rsa"' >> ~/.bashrc
+	@echo 'eval $$(ssh-agent -s)' >> ~/.bashrc
+	@echo 'ssh-add' >> ~/.bashrc
 
 ################################################
 # GIT
@@ -160,12 +161,43 @@ git_swap_https_to_ssh:
 # NGINX
 ################################################
 
+domain:
+	@make nginx_domain
+	@make certbot_domain
+
+subdomain:
+	@make nginx_domain
+	@make certbot_subdomain
+
 nginx_domain:
+	@echo ""
+	@echo "## NGINX DOMAIN SETUP ##"
 	@read -p "Domain (e.g. example.com): " DOMAIN; \
 	DOMAIN="$$DOMAIN"; \
     echo $$DOMAIN ; \
 	cat nginx.template | sed -e s/example.com/$$DOMAIN/g > /etc/nginx/sites-available/$$DOMAIN ; \
-	rm /etc/nginx/sites-enabled/$$DOMAIN ; \
-	ln -s /etc/nginx/sites-available/$$DOMAIN /etc/nginx/sites-enabled
-	@nginx -t
-	@systemctl reload nginx
+	rm /etc/nginx/sites-enabled/$$DOMAIN || true ; \
+	ln -s /etc/nginx/sites-available/$$DOMAIN /etc/nginx/sites-enabled ; \
+	nginx -t ; \
+	systemctl reload nginx ; \
+	mkdir /var/www/$$DOMAIN || true ; \
+	chown -R $(username):$(username) /var/www/$$DOMAIN ; \
+	chmod -R 755 /var/www/$$DOMAIN ; \
+	echo "" ; \
+	echo "Succesfully created site folder at /var/www/$$DOMAIN" ; \
+	echo "Web root is at /var/www/$$DOMAIN/public" ; \
+	echo ""
+
+certbot_domain:
+	@echo ""
+	@echo "## CERTBOT DOMAIN SETUP - Let\'s Encrypt ##"
+	@read -p "Domain (e.g. example.com): " DOMAIN; \
+	DOMAIN="$$DOMAIN"; \
+    certbot --nginx -d $$DOMAIN -d www.$$DOMAIN ;
+
+certbot_subdomain:
+	@echo ""
+	@echo "## CERTBOT SUBDOMAIN SETUP - Let\'s Encrypt ##"
+	@read -p "Subdomain (e.g. example.com): " DOMAIN; \
+	DOMAIN="$$DOMAIN"; \
+    certbot --nginx -d $$DOMAIN ;
