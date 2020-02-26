@@ -219,7 +219,7 @@ swap_space_increase:
 ################################################
 
 php_setup:
-	@apt install unzip
+	@sudo apt install unzip
 	@make composer_install
 
 composer_install:
