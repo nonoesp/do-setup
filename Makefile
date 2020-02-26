@@ -16,8 +16,12 @@ mysql_show=SHOW DATABASES;SELECT user FROM mysql.user;
 setup:
 	@make setup_root_account
 
+setup_user:
+	@make setup_user_account
+
 # To be run as root
 setup_root_account:
+	@make git_swap_https_to_ssh
 	@make user_create
 	@make phpmyadmin
 	@make mysql_up
@@ -29,6 +33,7 @@ setup_root_account:
 
 # To be run as {username}
 setup_user_account:
+	@make git_swap_https_to_ssh
 	@make ssh_key_create
 	@make ssh_key_print
 	@make ssh_key_add_bash_agent
@@ -38,6 +43,11 @@ user_create:
 	adduser $(username)
 	@echo "Providing sudo priveleges to ${username}"
 	usermod -aG sudo $(username)
+
+user_copy_do_setup:
+	@cp -r /root/do-setup /home/$(username)
+	@chown -R $(username):$(username) /home/$(username)/do-setup
+	@chmod -R 755 /home/$(username)/do-setup
 
 # Preseed phpMyAdmin install selections (to skip interactive input)
 phpmyadmin_setup:
@@ -96,7 +106,7 @@ www_privileges:
 ################################################
 
 root_enter_username:
-	@runuser -l $(username) -c 'mkdir dir_in_username'
+	@runuser -l $(username) -c 'cd do-setup'
 
 ################################################
 # SSH
@@ -118,7 +128,18 @@ ssh_key_print:
 ssh_key_add_bash_agent:
 	@echo "" >> ~/.bashrc
 	@echo "# Nono · Load ssh-agent on startup" >> ~/.bashrc
-	@echo "alias sha=\"eval '$(echo \'ssh-agent -s\')' && ssh-add ~/.ssh/id_rsa\"" >> ~/.bashrc
+	@echo "alias sha=\"eval 'ssh-agent -s' && ssh-add ~/.ssh/id_rsa\"" >> ~/.bashrc
+
+################################################
+# GIT
+################################################
+
+git_user_setup:
+	@git config --global user.email mundowarezweb@gmail.com
+	@git config --global user.name "Nono Martínez Alonso"
+
+git_swap_https_to_ssh:
+	@git remote set-url origin git@github.com:nonoesp/do-setup.git
 
 ################################################
 # NGINX
