@@ -33,7 +33,7 @@ setup_root_account:
 	@make ssh_key_print
 	@make ssh_key_add_bash_agent
 	@make swap_space_increase
-	@make nginx_increase_upload_size
+	@make nginx_setup_client_max_body_size
 	## TODO - install npm
 	## TODO - add swap space for composer update
 
@@ -214,8 +214,9 @@ swap_space_increase:
 	/sbin/mkswap /var/swap.1
 	/sbin/swapon /var/swap.1
 
-nginx_increase_upload_size:
-	echo "TODO - nginx_increase_upload_size"
+nginx_setup_client_max_body_size:
+	@sed -i 's/http {/http { \n# Nono · increase body size\nclient_max_body_size 64m;/g' \
+	/etc/nginx/nginx.conf
 
 ################################################
 # PHP · composer
