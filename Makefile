@@ -19,7 +19,9 @@ setup:
 	@make mysql_up
 	@make www_html_index
 	@make www_privileges
-	@make ssh_key
+	@make ssh_key_create
+	@make ssh_key_print
+	@make ssh_key_add_bash_agent
 
 user:
 	@echo "Creating user ${username}.."
@@ -83,8 +85,23 @@ www_privileges:
 # SSH
 ################################################
 
-ssh_key:
+ssh_key_create:
 	@ssh-keygen -f ~/.ssh/id_rsa
+
+ssh_key_print:
+	@echo
+	@cat ~/.ssh/id_rsa.pub
+	@echo
+	@echo "Now add this key to:"
+	@echo "- Github · https://github.com/settings/ssh/new"
+	@echo "- Bitbucket · https://bitbucket.org/dashboard/overview"
+	@echo
+
+# TODO - fix (alias line, in ssh-agent, doesn't work)
+ssh_key_add_bash_agent:
+	@echo "" >> /home/nono/.bashrc
+	@echo "# Nono · Load ssh-agent on startup" >> /home/nono/.bashrc
+	@echo "alias sha=\"eval '$(echo \'ssh-agent -s\')' && ssh-add ~/.ssh/id_rsa\"" >> /home/nono/.bashrc
 
 ################################################
 # NGINX
@@ -94,4 +111,8 @@ nginx_domain:
 	@read -p "Domain (e.g. example.com): " DOMAIN; \
 	DOMAIN="$$DOMAIN"; \
     echo $$DOMAIN ; \
-	cat nginx.template | sed -e s/example.com/$$DOMAIN/g >> $$DOMAIN
+	cat nginx.template | sed -e s/example.com/$$DOMAIN/g > /etc/nginx/sites-available/$$DOMAIN ; \
+	rm /etc/nginx/sites-enabled/$$DOMAIN ; \
+	ln -s /etc/nginx/sites-available/$$DOMAIN /etc/nginx/sites-enabled
+	@nginx -t
+	@systemctl reload nginx
