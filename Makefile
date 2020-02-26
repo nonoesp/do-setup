@@ -6,6 +6,10 @@ db_password=p
 phpmyadmin_password=pp
 phpmyadmin_mysql_root_password=ppp
 
+################################################
+# Automation for root account
+################################################
+
 # Util
 mysql_show=SHOW DATABASES;SELECT user FROM mysql.user;
 
@@ -15,6 +19,7 @@ setup:
 	@make mysql_up
 	@make www_html_index
 	@make www_privileges
+	@make ssh_key
 
 user:
 	@echo "Creating user ${username}.."
@@ -73,3 +78,20 @@ www_privileges:
 	@chown -R $(username):$(username) /var/www
 	@chmod -R 755 /var/www
 	@echo "Granted permissions to $(username) at /var/www"
+
+################################################
+# SSH
+################################################
+
+ssh_key:
+	@ssh-keygen -f ~/.ssh/id_rsa
+
+################################################
+# NGINX
+################################################
+
+nginx_domain:
+	@read -p "Domain (e.g. example.com): " DOMAIN; \
+	DOMAIN="$$DOMAIN"; \
+    echo $$DOMAIN ; \
+	cat nginx.template | sed -e s/example.com/$$DOMAIN/g >> $$DOMAIN
