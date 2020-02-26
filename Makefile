@@ -14,16 +14,26 @@ phpmyadmin_mysql_root_password=ppp
 mysql_show=SHOW DATABASES;SELECT user FROM mysql.user;
 
 setup:
-	@make user
+	@make setup_root_account
+
+# To be run as root
+setup_root_account:
+	@make user_create
 	@make phpmyadmin
 	@make mysql_up
 	@make www_html_index
 	@make www_privileges
 	@make ssh_key_create
 	@make ssh_key_print
+	@make ssh_key_add_bash_agent	
+
+# To be run as {username}
+setup_user_account:
+	@make ssh_key_create
+	@make ssh_key_print
 	@make ssh_key_add_bash_agent
 
-user:
+user_create:
 	@echo "Creating user ${username}.."
 	adduser $(username)
 	@echo "Providing sudo priveleges to ${username}"
@@ -82,6 +92,13 @@ www_privileges:
 	@echo "Granted permissions to $(username) at /var/www"
 
 ################################################
+# Switch to {username}
+################################################
+
+root_enter_username:
+	@runuser -l $(username) -c 'mkdir dir_in_username'
+
+################################################
 # SSH
 ################################################
 
@@ -99,9 +116,9 @@ ssh_key_print:
 
 # TODO - fix (alias line, in ssh-agent, doesn't work)
 ssh_key_add_bash_agent:
-	@echo "" >> /home/nono/.bashrc
-	@echo "# Nono · Load ssh-agent on startup" >> /home/nono/.bashrc
-	@echo "alias sha=\"eval '$(echo \'ssh-agent -s\')' && ssh-add ~/.ssh/id_rsa\"" >> /home/nono/.bashrc
+	@echo "" >> ~/.bashrc
+	@echo "# Nono · Load ssh-agent on startup" >> ~/.bashrc
+	@echo "alias sha=\"eval '$(echo \'ssh-agent -s\')' && ssh-add ~/.ssh/id_rsa\"" >> ~/.bashrc
 
 ################################################
 # NGINX
