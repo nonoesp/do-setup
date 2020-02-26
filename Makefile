@@ -243,4 +243,8 @@ folio_setup:
     sudo chown -R $(username):www-data $$FOLIOPATH/bootstrap/cache; \
 	sudo chmod -R 775 $$FOLIOPATH/storage; \
 	sudo chmod -R 775 $$FOLIOPATH/bootstrap/cache; \
+	cd $$FOLIOPATH; \
+	composer install; \
+	php artisan migrate; \
+	cd ~/do-setup; \
 	echo "Done setting up $$FOLIOPATH"
