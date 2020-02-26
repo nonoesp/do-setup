@@ -237,7 +237,7 @@ folio_clone:
 folio_setup:
 	@echo ""
 	@echo "## FOLIO SETUP ##"
-	@read -p "Path to app (e.g. /var/www/sample.com): " PATH; \
+	@read -p "Path to app (e.g. /var/www/sample.com): " FOLIOPATH; \
 	FOLIOPATH="$$FOLIOPATH"; \
 	echo $$FOLIOPATH; \
 	chown -R $(username):www-data $$FOLIOPATH/storage;
