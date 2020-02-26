@@ -33,6 +33,7 @@ setup_root_account:
 	@make ssh_key_print
 	@make ssh_key_add_bash_agent
 	@make swap_space_increase
+	@make nginx_increase_upload_size
 	## TODO - install npm
 	## TODO - add swap space for composer update
 
@@ -203,7 +204,7 @@ certbot_subdomain:
     certbot --nginx -d $$DOMAIN ;
 
 ################################################
-# SWAP SPACE
+# SWAP SPACE & NGINX UPLOAD SIZE
 # Lets us run memory-heavy commands
 # (e.g. composer update)
 ################################################
@@ -212,6 +213,9 @@ swap_space_increase:
 	/bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=1024
 	/sbin/mkswap /var/swap.1
 	/sbin/swapon /var/swap.1
+
+nginx_increase_upload_size:
+	echo "TODO - nginx_increase_upload_size"
 
 ################################################
 # PHP · composer
