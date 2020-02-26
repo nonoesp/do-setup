@@ -253,7 +253,7 @@ folio_setup:
 	sudo chmod -R 775 $$FOLIOPATH/bootstrap/cache; \
 	mkdir $$FOLIOPATH/img || true; \
 	mkdir $$FOLIOPATH/img/u || true; \
-	sudo chmod -R 777 $$FOLIOPATH/img/u;
+	sudo chmod -R 777 $$FOLIOPATH/public/img/u;
 	cd $$FOLIOPATH; \
 	composer install; \
 	php artisan migrate; \
