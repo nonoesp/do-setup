@@ -233,3 +233,14 @@ composer_install:
 
 folio_clone:
 	@git clone https://github.com/nonoesp/laravel-folio /var/www/laravel-folio
+
+folio_setup:
+	@echo ""
+	@echo "## FOLIO SETUP ##"
+	@read -p "Path to app (e.g. /var/www/sample.com): " PATH; \
+	PATH="$$PATH"; \
+    chown -R $(username):www-data $$PATH/storage; \
+    chown -R $(username):www-data $$PATH/boostrap/cache; \
+	chmod -R 775 $$PATH/storage ; \
+	chmod -R 775 $$PATH/boostrap/cache ; \
+	echo "Done setting up $$PATH"
