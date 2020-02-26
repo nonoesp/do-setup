@@ -158,7 +158,7 @@ git_swap_https_to_ssh:
 	@git remote set-url origin git@github.com:nonoesp/do-setup.git
 
 ################################################
-# NGINX
+# NGINX & CERTBOT
 ################################################
 
 domain:
@@ -201,3 +201,14 @@ certbot_subdomain:
 	@read -p "Subdomain (e.g. example.com): " DOMAIN; \
 	DOMAIN="$$DOMAIN"; \
     certbot --nginx -d $$DOMAIN ;
+
+################################################
+# SWAP SPACE
+# Lets us run memory-heavy commands
+# (e.g. composer update)
+################################################
+
+swap_space_increase:
+	/bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=1024
+	/sbin/mkswap /var/swap.1
+	/sbin/swapon /var/swap.1
