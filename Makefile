@@ -24,13 +24,16 @@ setup_root_account:
 	@make git_user_setup
 	@make git_swap_https_to_ssh
 	@make user_create
+	@make user_copy_do_setup
 	@make phpmyadmin
 	@make mysql_up
 	@make www_html_index
 	@make www_privileges
 	@make ssh_key_create
 	@make ssh_key_print
-	@make ssh_key_add_bash_agent	
+	@make ssh_key_add_bash_agent
+	## TODO - install npm
+	## TODO - add swap space for composer update
 
 # To be run as {username}
 setup_user_account:
@@ -39,6 +42,8 @@ setup_user_account:
 	@make ssh_key_create
 	@make ssh_key_print
 	@make ssh_key_add_bash_agent
+	## TODO - create laravel folder
+	## TODO - create domain optionally?
 
 user_create:
 	@echo "Creating user ${username}.."
@@ -126,7 +131,6 @@ ssh_key_print:
 	@echo "- Bitbucket · https://bitbucket.org/dashboard/overview"
 	@echo
 
-# TODO - fix (alias line, in ssh-agent, doesn't work)
 ssh_key_add_bash_agent:
 	@echo "" >> ~/.bashrc
 	@echo "# Nono · Load ssh-agent on startup" >> ~/.bashrc
