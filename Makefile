@@ -21,6 +21,7 @@ setup_user:
 
 # To be run as root
 setup_root_account:
+	@make git_user_setup
 	@make git_swap_https_to_ssh
 	@make user_create
 	@make phpmyadmin
@@ -33,6 +34,7 @@ setup_root_account:
 
 # To be run as {username}
 setup_user_account:
+	@make git_user_setup
 	@make git_swap_https_to_ssh
 	@make ssh_key_create
 	@make ssh_key_print
