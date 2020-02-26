@@ -239,7 +239,6 @@ folio_setup:
 	@echo "## FOLIO SETUP ##"
 	@read -p "Path to app (e.g. /var/www/sample.com): " FOLIOPATH; \
 	FOLIOPATH="$$FOLIOPATH"; \
-	echo $$FOLIOPATH; \
 	sudo chown -R $(username):www-data $$FOLIOPATH/storage; \
     sudo chown -R $(username):www-data $$FOLIOPATH/bootstrap/cache; \
 	sudo chmod -R 775 $$FOLIOPATH/storage; \
