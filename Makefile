@@ -128,7 +128,7 @@ ssh_key_print:
 ssh_key_add_bash_agent:
 	@echo "" >> ~/.bashrc
 	@echo "# Nono · Load ssh-agent on startup" >> ~/.bashrc
-	@echo "alias sha=\"eval 'ssh-agent -s' && ssh-add ~/.ssh/id_rsa\"" >> ~/.bashrc
+	@echo 'alias sha="ssh-agent -s && ssh-add ~/.ssh/id_rsa"' >> ~/.bashrc
 
 ################################################
 # GIT
