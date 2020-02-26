@@ -218,6 +218,10 @@ swap_space_increase:
 # PHP · composer
 ################################################
 
+php_setup:
+	@apt install unzip
+	@make composer_install
+
 composer_install:
 	@cd ~
 	@curl -sS https://getcomposer.org/installer -o composer-setup.php
