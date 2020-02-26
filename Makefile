@@ -239,8 +239,8 @@ folio_setup:
 	@echo "## FOLIO SETUP ##"
 	@read -p "Path to app (e.g. /var/www/sample.com): " PATH; \
 	PATH="$$PATH"; \
-    chown -R $(username):www-data $$PATH/storage; \
-    chown -R $(username):www-data $$PATH/boostrap/cache; \
-	chmod -R 775 $$PATH/storage ; \
-	chmod -R 775 $$PATH/boostrap/cache ; \
+    sudo chown -R $(username):www-data $$PATH/storage; \
+    sudo chown -R $(username):www-data $$PATH/boostrap/cache; \
+	sudo chmod -R 775 $$PATH/storage ; \
+	sudo chmod -R 775 $$PATH/boostrap/cache ; \
 	echo "Done setting up $$PATH"
