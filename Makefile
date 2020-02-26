@@ -217,6 +217,7 @@ swap_space_increase:
 nginx_setup_client_max_body_size:
 	@sed -i 's/http {/http { \n# Nono · increase body size\nclient_max_body_size 64m;/g' \
 	/etc/nginx/nginx.conf
+	@systemctl restart nginx
 
 ################################################
 # PHP · composer
