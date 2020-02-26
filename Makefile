@@ -213,3 +213,15 @@ swap_space_increase:
 	/bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=1024
 	/sbin/mkswap /var/swap.1
 	/sbin/swapon /var/swap.1
+
+################################################
+# PHP · composer
+################################################
+
+composer_install:
+	@cd ~
+	@curl -sS https://getcomposer.org/installer -o composer-setup.php
+	@php -r "if (hash_file('SHA384', 'composer-setup.php') === '$HASH') \
+	{ echo 'Installer verified'; } else { \
+	echo 'Installer corrupt'; unlink('composer-setup.php'); \
+	} echo PHP_EOL;"
