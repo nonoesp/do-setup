@@ -257,7 +257,7 @@ folio_setup:
 	sudo chmod -R 777 $$FOLIOPATH/public/img/u; \
 	cd $$FOLIOPATH; \
 	composer install; \
-	php artisan key:generate \
+	php artisan key:generate; \
 	php artisan migrate; \
 	cd ~/do-setup; \
 	echo "Done setting up $$FOLIOPATH"
