@@ -276,7 +276,9 @@ folio_setup_env_auto:
 	@test -f $(laravel_env_path)/.env && \
 	(\
 	echo "## Environment file exists (at $(laravel_env_path)/.env )." \
-	) || (\
+	) \
+	|| \
+	(\
 	echo "## Environment file does not exist (at $(laravel_env_path)/.env )." && \
 	echo "## Creating.." && \
 	cp ./laravel-env.template $(laravel_env_path)/.env && \
