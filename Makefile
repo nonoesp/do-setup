@@ -189,6 +189,20 @@ nginx_domain:
 	echo "Web root is at /var/www/$$DOMAIN/public" ; \
 	echo ""
 
+nginx_domain_down:
+	@echo ""
+	@echo "## NGINX REMOVE DOMAIN SETUP ##"
+	@read -p "Domain (e.g. example.com): " DOMAIN; \
+	DOMAIN="$$DOMAIN"; \
+    echo $$DOMAIN ; \
+	rm /etc/nginx/sites-available/$$DOMAIN || true ; \
+	rm /etc/nginx/sites-enabled/$$DOMAIN || true ; \
+	nginx -t ; \
+	systemctl reload nginx ; \
+	echo "" ; \
+	echo "Succesfully remove $$DOMAIN from nginx." ; \
+	echo ""
+
 certbot_domain:
 	@echo ""
 	@echo "## CERTBOT DOMAIN SETUP - Let\'s Encrypt ##"
