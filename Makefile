@@ -247,9 +247,7 @@ folio_setup:
 	@echo "## FOLIO SETUP ##"
 	@read -p "Path to app (e.g. /var/www/sample.com): " FOLIOPATH; \
 	FOLIOPATH="$$FOLIOPATH"; \
-	echo "##########################";\
-	test -f $$FOLIOPATH/.env && echo "Environment file exists." || echo "[WARNING] Environment file does not exist."; \
-	echo "##########################";\
+	make folio_setup_env_auto laravel_env_path=$$FOLIOPATH; \
 	sudo chown -R $(username):www-data $$FOLIOPATH/storage; \
 	sudo chown -R $(username):www-data $$FOLIOPATH/bootstrap/cache; \
 	sudo chmod -R 775 $$FOLIOPATH/storage; \
@@ -259,15 +257,31 @@ folio_setup:
 	sudo chmod -R 777 $$FOLIOPATH/public/img/u; \
 	cd $$FOLIOPATH; \
 	composer install; \
+	php artisan key:generate \
 	php artisan migrate; \
 	cd ~/do-setup; \
 	echo "Done setting up $$FOLIOPATH"
 	
-folio_setup_env:
-	@echo ""
-	@echo "## FOLIO SETUP ##"
+folio_setup_env_prompt:
 	@read -p "Path to app (e.g. /var/www/sample.com): " FOLIOPATH; \
 	FOLIOPATH="$$FOLIOPATH"; \
-	echo "##########################################";\
-	test -f $$FOLIOPATH/.env && echo "Environment file exists." || \
-	echo "sample=content" > $$FOLIOPATH/.env && echo "Successfully created environment file." && echo "##########################################"
+	make folio_setup_env_auto laravel_env_path=$$FOLIOPATH;
+
+folio_setup_env_auto:
+	@clear
+	@echo ""
+	@echo "##########################################"
+	@echo "## Folio setup .env"
+	@echo "##########################################"
+	@test -f $(laravel_env_path)/.env && \
+	(\
+	echo "## Environment file exists." \
+	) || (\
+	echo "## Environment file does not exist." && \
+	cp ./laravel-env.template $(laravel_env_path)/.env && \
+	cat $(laravel_env_path)/.env | sed -e s/\{DB_DATABASE}/$(db_name)/g | tee $(laravel_env_path)/.env 1>/dev/null && \
+	cat $(laravel_env_path)/.env | sed -e s/\{DB_USERNAME}/$(db_user)/g | tee $(laravel_env_path)/.env 1>/dev/null && \
+	cat $(laravel_env_path)/.env | sed -e s/\{DB_PASSWORD}/$(db_password)/g | tee $(laravel_env_path)/.env 1>/dev/null \
+	)
+	@echo "##########################################"
+	@echo ""
