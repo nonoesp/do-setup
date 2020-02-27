@@ -268,8 +268,8 @@ folio_setup_env:
 	@echo "## FOLIO SETUP ##"
 	@read -p "Path to app (e.g. /var/www/sample.com): " FOLIOPATH; \
 	FOLIOPATH="$$FOLIOPATH"; \
-	echo "##########################";\
+	echo "##########################################";\
 	test -f $$FOLIOPATH/.env && echo "Environment file exists." || \
 	echo "sample=content" > $$FOLIOPATH/.env	
 	@echo "Successfully created environment file."
-	@echo "##########################"
+	@echo "##########################################"
