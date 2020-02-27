@@ -271,9 +271,4 @@ folio_setup_env:
 	echo "##########################";\
 	test -f $$FOLIOPATH/.env && echo "Environment file exists." || \
 	echo "sample=content" > $$FOLIOPATH/.env; \
-	echo "##########################";\
-	
-
-
-
-
+	echo "##########################"
