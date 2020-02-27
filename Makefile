@@ -262,3 +262,18 @@ folio_setup:
 	php artisan migrate; \
 	cd ~/do-setup; \
 	echo "Done setting up $$FOLIOPATH"
+	
+folio_setup_env:
+	@echo ""
+	@echo "## FOLIO SETUP ##"
+	@read -p "Path to app (e.g. /var/www/sample.com): " FOLIOPATH; \
+	FOLIOPATH="$$FOLIOPATH"; \
+	echo "##########################";\
+	test -f $$FOLIOPATH/.env && echo "Environment file exists." || \
+	echo "sample=content" > $$FOLIOPATH/.env; \
+	echo "##########################";\
+	
+
+
+
+
