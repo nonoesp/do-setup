@@ -273,5 +273,5 @@ folio_setup_env:
 	echo "sample=content" > $$FOLIOPATH/.env && \
 	echo "sample=content" > $$FOLIOPATH/.env && \
 	echo "sample=content" > $$FOLIOPATH/.env && \	
-	echo "Successfully created environment file." \
+	echo "Successfully created environment file."; \
 	echo "##########################"
