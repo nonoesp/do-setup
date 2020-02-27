@@ -281,10 +281,10 @@ folio_setup_env_auto:
 	( \
 	echo "## Environment file does not exist (at $(laravel_env_path)/.env )." && \
 	echo "## Creating.." && \
-	cp ./laravel-env.template $(laravel_env_path)/.env && \
-	sed -i -e "s/DB_DATABASE=.*/DB_DATABASE=$(db_name)/g" $(laravel_env_path)/.env && \
-	sed -i -e "s/DB_USERNAME=.*/DB_USERNAME=$(db_user)/g" $(laravel_env_path)/.env && \
-	sed -i -e "s/DB_PASSWORD=.*/DB_PASSWORD=$(db_password)/g" $(laravel_env_path)/.env \
+	cp ./laravel-env.template $(laravel_env_path)/.env \
 	)
+	sed -i -e "s/DB_DATABASE=.*/DB_DATABASE=$(db_name)/g" $(laravel_env_path)/.env
+	sed -i -e "s/DB_USERNAME=.*/DB_USERNAME=$(db_user)/g" $(laravel_env_path)/.env
+	sed -i -e "s/DB_PASSWORD=.*/DB_PASSWORD=$(db_password)/g" $(laravel_env_path)/.env
 	@echo "##########################################"
 	@echo ""
