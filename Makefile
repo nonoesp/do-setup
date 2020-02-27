@@ -275,11 +275,14 @@ folio_setup_env_auto:
 	@echo "##########################################"
 	@test -f $(laravel_env_path)/.env && \
 	(\
-	echo "## Environment file exists." \
+	echo "## Environment file exists (at $(laravel_env_path)/.env )." \
 	) || (\
-	echo "## Environment file does not exist." && \
+	echo "## Environment file does not exist (at $(laravel_env_path)/.env )." && \
 	echo "## Creating.." && \
-	cp ./laravel-env.template $(laravel_env_path)/.env \
+	cp ./laravel-env.template $(laravel_env_path)/.env && \
+	cat $(laravel_env_path)/.env | sed -e s/\{DB_DATABASE}/$(db_name)/g | tee $(laravel_env_path)/.env 1>/dev/null && \
+	cat $(laravel_env_path)/.env | sed -e s/\{DB_USERNAME}/$(db_user)/g | tee $(laravel_env_path)/.env 1>/dev/null && \
+	cat $(laravel_env_path)/.env | sed -e s/\{DB_PASSWORD}/$(db_password)/g | tee $(laravel_env_path)/.env 1>/dev/null \
 	)
 	@echo "##########################################"
 	@echo ""
