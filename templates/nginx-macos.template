@@ -1,0 +1,36 @@
+server {
+
+        listen                          80;
+        server_name                     example.com *.example.com;
+        index                           index.html index.php;
+        client_max_body_size            40M;        
+        
+        root {{root}};
+
+        location ~ \.php$ {
+            try_files                   $uri =404;
+            fastcgi_index               index.php;
+            fastcgi_param               SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            fastcgi_read_timeout        300;
+            fastcgi_keep_conn           on;
+            include                     /usr/local/etc/nginx/fastcgi_params;
+            # php-fpm bound to port 9071
+            fastcgi_pass                127.0.0.1:9071;
+            index                       index.html index.php;    
+        }
+        
+        location / {
+            try_files   $uri
+                        $uri/
+                        /index.php?$args;
+        }
+
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   html;
+        }
+
+        access_log 			    /usr/local/var/log/nginx/example.com.access.log;
+        error_log 			    /usr/local/var/log/nginx/example.com.error.log;
+
+}
