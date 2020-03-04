@@ -270,7 +270,7 @@ folio_setup:
 	mkdir $$FOLIOPATH/img/u || true; \
 	sudo chmod -R 777 $$FOLIOPATH/public/img/u; \
 	cd $$FOLIOPATH; \
-	composer install; \
+	composer install --no-dev; \
 	php artisan key:generate; \
 	php artisan migrate; \
 	cd ~/do-setup; \
