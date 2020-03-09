@@ -293,9 +293,10 @@ folio_setup:
 	sudo chown -R $(MACHINE_USERNAME):www-data $$FOLIOPATH/bootstrap/cache; \
 	sudo chmod -R 775 $$FOLIOPATH/storage; \
 	sudo chmod -R 775 $$FOLIOPATH/bootstrap/cache; \
-	mkdir $$FOLIOPATH/img || true; \
-	mkdir $$FOLIOPATH/img/u || true; \
-	sudo chmod -R 777 $$FOLIOPATH/public/img/u; \
+	mkdir $$FOLIOPATH/public/img || true; \
+	mkdir $$FOLIOPATH/storage/app/public/uploads || true; \
+	sudo chmod -R 777 $$FOLIOPATH/storage/app/public/uploads; \
+	sudo ln -s $$FOLIOPATH/storage/app/public/uploads $$FOLIOPATH/public/img/u; \
 	cd $$FOLIOPATH; \
 	composer install --no-dev; \
 	php artisan key:generate; \
