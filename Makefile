@@ -22,6 +22,7 @@ setup_root_account:
 	@make git_swap_https_to_ssh
 	@make user_create
 	@make user_copy_do_setup
+	@make php73_install
 	@make phpmyadmin
 	@make mysql_up
 	@make www_html_index
@@ -72,6 +73,25 @@ user_copy_do_setup:
 # 	@echo '# Nono - Daemon to start ssh-agent upon login to server' >> ~/.bashrc
 # 	@echo 'export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"' >> ~/.bashrc
 # 	@exit
+
+php73_install:
+	@add-apt-repository ppa:ondrej/php -y
+	@apt-get update
+	@apt-get install php7.3 -y
+	@apt install \
+	php7.3-cli \
+	php7.3-fpm \
+	php7.3-json \
+	php7.3-pdo \
+	php7.3-mysql \
+	php7.3-zip \
+	php7.3-gd \
+	php7.3-mbstring \
+	php7.3-curl \
+	php7.3-xml \
+	php7.3-bcmath \
+	php7.3-json -y
+	@sudo systemctl restart nginx
 
 # Preseed phpMyAdmin install selections (to skip interactive input)
 phpmyadmin_setup:
