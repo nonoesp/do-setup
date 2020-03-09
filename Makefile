@@ -19,7 +19,7 @@ setup_user:
 # To be run as root
 setup_root_account:
 	@make git_user_setup
-	@make git_swap_https_to_ssh
+	#@make git_swap_https_to_ssh
 	@make user_create
 	@make user_copy_do_setup
 	@make php73_install
@@ -180,8 +180,8 @@ ssh_key_add_bash_agent:
 ################################################
 
 git_user_setup:
-	@git config --global user.email mundowarezweb@gmail.com
-	@git config --global user.name "Nono Martínez Alonso"
+	@git config --global user.email $(GIT_EMAIL)
+	@git config --global user.name "$(GIT_FULLNAME)"
 
 git_swap_https_to_ssh:
 	@git remote set-url origin git@github.com:nonoesp/do-setup.git
