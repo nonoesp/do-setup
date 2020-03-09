@@ -6,7 +6,7 @@ A set of Makefile automation commands to setup a new Digital Ocean LEMP instance
 
 ### PART 1: root
 
-- Create a LEMP droplet
+- Create a [LEMP droplet](https://cloud.digitalocean.com/marketplace/5ba19755c472e4189b34e04e?i=c8d5e9)
     - `$5/mo`
     - `London` or the closest to your geo-location
     - Add you `SSH keys`
