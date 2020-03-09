@@ -91,6 +91,7 @@ php73_install:
 	php7.3-xml \
 	php7.3-bcmath \
 	php7.3-json -y
+	@sed -i -e 's/php7.2-fpm/php7.3-fpm/g' /etc/nginx/sites-available/digitalocean
 	@sudo systemctl restart nginx
 
 # Preseed phpMyAdmin install selections (to skip interactive input)
