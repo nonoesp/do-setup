@@ -17,7 +17,6 @@ nginx_domain_remove_auto:
 	@nginx -t
 	@brew services restart nginx
 
-
 nginx_domain:
 	@make nginx_domain_prompt
 
@@ -33,7 +32,7 @@ nginx_domain_prompt:
 nginx_domain_auto:
 	$(eval escapedRoot = `echo $(root) | sed 's/\//{{slash}}/g'`)
 	@cp ../templates/nginx-macos.template /usr/local/etc/nginx/sites-available/$(domain)
-	@sed -i -e s/example.com/$(domain)/g /usr/local/etc/nginx/sites-available/$(domain)
+	@sed -i -e s/{{domain}}/$(domain)/g /usr/local/etc/nginx/sites-available/$(domain)
 	@sed -i -e s/{{root}}/${escapedRoot}/g /usr/local/etc/nginx/sites-available/$(domain)
 	@sed -i -e 's/{{slash}}/\//g' /usr/local/etc/nginx/sites-available/$(domain)
 	@rm /usr/local/etc/nginx/sites-available/$(domain)-e || true

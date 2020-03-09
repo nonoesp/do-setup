@@ -1,7 +1,7 @@
 server {
 
         listen                          80;
-        server_name                     example.com *.example.com;
+        server_name                     {{domain}} *.{{domain}};
         index                           index.html index.php;
         client_max_body_size            40M;        
         
@@ -30,7 +30,7 @@ server {
             root   html;
         }
 
-        access_log 			    /usr/local/var/log/nginx/example.com.access.log;
-        error_log 			    /usr/local/var/log/nginx/example.com.error.log;
+        access_log 			    /usr/local/var/log/nginx/{{domain}}.access.log;
+        error_log 			    /usr/local/var/log/nginx/{{domain}}.error.log;
 
 }

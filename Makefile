@@ -1,17 +1,14 @@
-# Config
-username=nono
-db_name=folio_sample
-db_user=folio_user_sample
-db_password=p
-phpmyadmin_password=pp
-phpmyadmin_mysql_root_password=ppp
+DOTENV_PATH=./.env
+
+include .env
+export
 
 ################################################
 # Automation for root account
 ################################################
 
 # Util
-mysql_show=SHOW DATABASES;SELECT user FROM mysql.user;
+MYSQL_SHOW=SHOW DATABASES;SELECT user FROM mysql.user;
 
 setup:
 	@make setup_root_account
@@ -34,10 +31,8 @@ setup_root_account:
 	@make ssh_key_add_bash_agent
 	@make swap_space_increase
 	@make nginx_setup_client_max_body_size
-	## TODO - install npm
-	## TODO - add swap space for composer update
 
-# To be run as {username}
+# To be run as ${MACHINE_USERNAME}
 setup_user_account:
 	@make git_user_setup
 	@make git_swap_https_to_ssh
@@ -46,16 +41,28 @@ setup_user_account:
 	@make ssh_key_add_bash_agent
 	@make php_setup
 
+root_dotenv_exists:
+	@test -f $(DOTENV_PATH) && \
+	(\
+	echo "## Environment file exists (at $(DOTENV_PATH) )." \
+	) \
+	|| \
+	( \
+	echo "## Environment file does not exist (at $(DOTENV_PATH) )." && \
+	echo "## Creating.." && \
+	cp ./.env.example $(DOTENV_PATH) \
+	)
+
 user_create:
-	@echo "Creating user ${username}.."
-	adduser $(username)
-	@echo "Providing sudo priveleges to ${username}"
-	usermod -aG sudo $(username)
+	@echo "Creating user ${MACHINE_USERNAME}.."
+	adduser $(MACHINE_USERNAME)
+	@echo "Providing sudo priveleges to ${MACHINE_USERNAME}"
+	usermod -aG sudo $(MACHINE_USERNAME)
 
 user_copy_do_setup:
-	@cp -r /root/do-setup /home/$(username)
-	@chown -R $(username):$(username) /home/$(username)/do-setup
-	@chmod -R 755 /home/$(username)/do-setup
+	@cp -r /root/do-setup /home/$(MACHINE_USERNAME)
+	@chown -R $(MACHINE_USERNAME):$(MACHINE_USERNAME) /home/$(MACHINE_USERNAME)/do-setup
+	@chmod -R 755 /home/$(MACHINE_USERNAME)/do-setup
 
 # user_create_ssh_agent_daemon:
 # 	@printf '[Unit]\nDescription=SSH authentication agent\n\n[Service]\nExecStart=/usr/bin/ssh-agent -a %%t/ssh-agent.socket -D\nType=simple\n\n[Install]\nWantedBy=default.target\n' \
@@ -71,9 +78,9 @@ phpmyadmin_setup:
 	echo "phpmyadmin phpmyadmin/internal/skip-preseed boolean true" | debconf-set-selections
 	echo "phpmyadmin phpmyadmin/reconfigure-webserver multiselect" | debconf-set-selections
 	echo "phpmyadmin phpmyadmin/dbconfig-install boolean false" | debconf-set-selections
-	echo "phpmyadmin phpmyadmin/mysql/admin-pass password $(phpmyadmin_mysql_root_password)" | debconf-set-selections
-	echo "phpmyadmin phpmyadmin/mysql/app-pass password $(phpmyadmin_password)" | debconf-set-selections
-	echo "phpmyadmin phpmyadmin/app-password-confirm password $(phpmyadmin_password)" | debconf-set-selections
+	echo "phpmyadmin phpmyadmin/mysql/admin-pass password $(PHPMYADMIN_MYSQL_ROOT_PASSWORD)" | debconf-set-selections
+	echo "phpmyadmin phpmyadmin/mysql/app-pass password $(PHPMYADMIN_PASSWORD)" | debconf-set-selections
+	echo "phpmyadmin phpmyadmin/app-password-confirm password $(PHPMYADMIN_PASSWORD)" | debconf-set-selections
 
 phpmyadmin:
 	apt update
@@ -83,23 +90,23 @@ phpmyadmin:
 	ln -s /usr/share/phpmyadmin /var/www/html/pma
 
 mysql_show:
-	@mysql -u root -p -e "${mysql_show}"
+	@mysql -u root -p -e "${MYSQL_SHOW}"
 
 mysql_down:
 	@mysql -u root -p -e "\
-	DROP DATABASE $(db_name); \
-	DROP USER '$(db_user)'@'localhost';\
-	$(mysql_show)\
+	DROP DATABASE $(DB_DATABASE); \
+	DROP USER '$(DB_USERNAME)'@'localhost';\
+	$(MYSQL_SHOW)\
 	FLUSH PRIVILEGES;\
 	"
 
 mysql_up:
 	@mysql -u root -p -e \
-	"CREATE DATABASE $(db_name); \
-	CREATE USER '$(db_user)'@'localhost' IDENTIFIED BY '$(db_password)';\
-    ALTER USER '$(db_user)'@'localhost' IDENTIFIED BY '$(db_password)';\
-    GRANT ALL PRIVILEGES ON *.* TO '$(db_user)'@'localhost';\
-	$(mysql_show)\
+	"CREATE DATABASE $(DB_DATABASE); \
+	CREATE USER '$(DB_USERNAME)'@'localhost' IDENTIFIED BY '$(DB_PASSWORD)';\
+    ALTER USER '$(DB_USERNAME)'@'localhost' IDENTIFIED BY '$(DB_PASSWORD)';\
+    GRANT ALL PRIVILEGES ON *.* TO '$(DB_USERNAME)'@'localhost';\
+	$(MYSQL_SHOW)\
 	FLUSH PRIVILEGES;\
 	"
 
@@ -114,16 +121,16 @@ www_html_index:
 	or read <a href='https://nono.ma' target='_blank'>blog</a>." > /var/www/html/index.html
 
 www_privileges:
-	@chown -R $(username):$(username) /var/www
+	@chown -R $(MACHINE_USERNAME):$(MACHINE_USERNAME) /var/www
 	@chmod -R 755 /var/www
-	@echo "Granted permissions to $(username) at /var/www"
+	@echo "Granted permissions to $(MACHINE_USERNAME) at /var/www"
 
 ################################################
-# Switch to {username}
+# Switch to {MACHINE_USERNAME}
 ################################################
 
 root_enter_username:
-	@runuser -l $(username) -c 'cd do-setup'
+	@runuser -l $(MACHINE_USERNAME) -c 'cd do-setup'
 
 ################################################
 # SSH
@@ -176,13 +183,13 @@ nginx_domain:
 	@read -p "Domain (e.g. example.com): " DOMAIN; \
 	DOMAIN="$$DOMAIN"; \
     echo $$DOMAIN ; \
-	cat nginx.template | sed -e s/example.com/$$DOMAIN/g > /etc/nginx/sites-available/$$DOMAIN ; \
+	cat ./templates/nginx-digitalocean.template | sed -e s/{{domain}}/$$DOMAIN/g > /etc/nginx/sites-available/$$DOMAIN ; \
 	rm /etc/nginx/sites-enabled/$$DOMAIN || true ; \
 	ln -s /etc/nginx/sites-available/$$DOMAIN /etc/nginx/sites-enabled ; \
 	nginx -t ; \
 	systemctl reload nginx ; \
 	mkdir /var/www/$$DOMAIN || true ; \
-	chown -R $(username):$(username) /var/www/$$DOMAIN ; \
+	chown -R $(MACHINE_USERNAME):$(MACHINE_USERNAME) /var/www/$$DOMAIN ; \
 	chmod -R 755 /var/www/$$DOMAIN ; \
 	echo "" ; \
 	echo "Succesfully created site folder at /var/www/$$DOMAIN" ; \
@@ -262,8 +269,8 @@ folio_setup:
 	@read -p "Path to app (e.g. /var/www/sample.com): " FOLIOPATH; \
 	FOLIOPATH="$$FOLIOPATH"; \
 	make folio_setup_env_auto laravel_env_path=$$FOLIOPATH; \
-	sudo chown -R $(username):www-data $$FOLIOPATH/storage; \
-	sudo chown -R $(username):www-data $$FOLIOPATH/bootstrap/cache; \
+	sudo chown -R $(MACHINE_USERNAME):www-data $$FOLIOPATH/storage; \
+	sudo chown -R $(MACHINE_USERNAME):www-data $$FOLIOPATH/bootstrap/cache; \
 	sudo chmod -R 775 $$FOLIOPATH/storage; \
 	sudo chmod -R 775 $$FOLIOPATH/bootstrap/cache; \
 	mkdir $$FOLIOPATH/img || true; \
@@ -295,10 +302,10 @@ folio_setup_env_auto:
 	( \
 	echo "## Environment file does not exist (at $(laravel_env_path)/.env )." && \
 	echo "## Creating.." && \
-	cp ./laravel-env.template $(laravel_env_path)/.env \
+	cp ./templates/laravel-env.template $(laravel_env_path)/.env \
 	)
-	@sed -i -e "s/DB_DATABASE=.*/DB_DATABASE=$(db_name)/g" $(laravel_env_path)/.env
-	@sed -i -e "s/DB_USERNAME=.*/DB_USERNAME=$(db_user)/g" $(laravel_env_path)/.env
-	@sed -i -e "s/DB_PASSWORD=.*/DB_PASSWORD=$(db_password)/g" $(laravel_env_path)/.env
+	@sed -i -e "s/DB_DATABASE=.*/DB_DATABASE=$(DB_DATABASE)/g" $(laravel_env_path)/.env
+	@sed -i -e "s/DB_USERNAME=.*/DB_USERNAME=$(DB_USERNAME)/g" $(laravel_env_path)/.env
+	@sed -i -e "s/DB_PASSWORD=.*/DB_PASSWORD=$(DB_PASSWORD)/g" $(laravel_env_path)/.env
 	@echo "##########################################"
 	@echo ""
