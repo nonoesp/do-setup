@@ -22,7 +22,7 @@ setup_root_account:
 	#@make git_swap_https_to_ssh
 	@make user_create
 	@make user_copy_do_setup
-	@make php73_install
+	@make php80_install
 	@make phpmyadmin
 	@make mysql_up
 	@make www_html_index
@@ -74,24 +74,21 @@ user_copy_do_setup:
 # 	@echo 'export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"' >> ~/.bashrc
 # 	@exit
 
-php73_install:
+php80_install:
 	@add-apt-repository ppa:ondrej/php -y
 	@apt-get update
-	@apt-get install php7.3 -y
+	@apt-get install php8.0 -y
 	@apt install \
-	php7.3-cli \
-	php7.3-fpm \
-	php7.3-json \
-	php7.3-pdo \
-	php7.3-mysql \
-	php7.3-zip \
-	php7.3-gd \
-	php7.3-mbstring \
-	php7.3-curl \
-	php7.3-xml \
-	php7.3-bcmath \
-	php7.3-json -y
-	@sed -i -e 's/php7.2-fpm/php7.3-fpm/g' /etc/nginx/sites-available/digitalocean
+	php8.0-cli \
+	php8.0-fpm \
+	php8.0-pdo \
+	php8.0-mysql \
+	php8.0-zip \
+	php8.0-gd \
+	php8.0-mbstring \
+	php8.0-curl \
+	php8.0-xml \
+	php8.0-bcmath
 	@sudo systemctl restart nginx
 
 # Preseed phpMyAdmin install selections (to skip interactive input)
@@ -168,7 +165,7 @@ ssh_key_print:
 	@echo
 	@echo "Now add this key to:"
 	@echo "- Github · https://github.com/settings/ssh/new"
-	@echo "- Bitbucket · https://bitbucket.org/dashboard/overview"
+	@echo "- Bitbucket · https://bitbucket.org/account/settings/ssh-keys/"
 	@echo
 
 ssh_key_add_bash_agent:
